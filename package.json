@@ -1,0 +1,37 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/malafeev7/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/malafeev7/frontend-project-lvl2/actions)",
+  "main": "index.js",
+  "bin": {
+    "gendiff": "bin/gendiff.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malafeev7/frontend-project-lvl2.git"
+  },
+  "author": "Andrey Malafeyev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/malafeev7/frontend-project-lvl2/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/malafeev7/frontend-project-lvl2#readme",
+  "dependencies": {
+    "commander": "^8.3.0",
+    "lodash": "^4.17.21",
+    "webpack": "^5.66.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.10",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "eslint": "^8.7.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4"
+  }
+}
