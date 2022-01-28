@@ -1,44 +1,75 @@
 import { readFileSync } from 'fs';
-import path from 'path';
+import _ from 'lodash';
 
-const readJSON = (file) => {
-  const readFile = readFileSync(path.resolve(file), 'utf-8');
-  const parseFile = JSON.parse(readFile);
-  return parseFile;
+const symbolls = {
+  unchanged: ' ',
+  added: '+',
+  removed: '-',
 };
 
-const genDiff = (firstObj, secondObj) => {
-  const file1 = readJSON(firstObj);
-  const file2 = readJSON(secondObj);
-  const firstObjKeys = Object.keys(file1);
-  const secondObjKeys = Object.keys(file2);
-  const combinedObj = { ...file1, ...file2 };
-  const combinedObjEntries = Object.entries(combinedObj).sort();
-
-  const result = {};
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [key, value] of combinedObjEntries) {
-    if (
-      firstObjKeys.includes(key)
-      && secondObjKeys.includes(key)
-      && file1[key] === value
-    ) {
-      result[` ${key}`] = file1[key];
-    } else if (!firstObjKeys.includes(key)) {
-      result[`+ ${key}`] = file2[key];
-    } else if (
-      firstObjKeys.includes(key)
-      && secondObjKeys.includes(key)
-      && file1[key] !== value
-    ) {
-      result[`- ${key}`] = file1[key];
-      result[`+ ${key}`] = file2[key];
-    } else if (firstObjKeys.includes(key) && !secondObjKeys.includes(key)) {
-      result[`- ${key}`] = file1[key];
+const format = (obj, depth = 1) => {
+  const arr = Object.entries(obj);
+  const indent = ' '.repeat(depth);
+  let str = '';
+  arr.forEach(([key, valueKey]) => {
+    if (valueKey.status === 'changed') {
+      str += `${indent}${symbolls.removed} ${key}: ${valueKey.valueBefore}\n`;
+      str += `${indent}${symbolls.added} ${key}: ${valueKey.valueAfter}\n`;
+    } else {
+      str += `${indent}${symbolls[valueKey.status]} ${key}: ${
+        valueKey.value
+      }\n`;
     }
-  }
-  const toString = JSON.stringify(result, null, '  ');
-  return toString.replace(/["']/g, '');
+  });
+
+  const result = `{\n${str}}`;
+  return result;
 };
-export default genDiff;
+const genDiff = (dataFile1, dataFile2) => {
+  const commonKeys = _.intersection(
+    Object.keys(dataFile1),
+    Object.keys(dataFile2),
+  );
+  const removedKeys = _.difference(
+    Object.keys(dataFile1),
+    Object.keys(dataFile2),
+  );
+  const addedKeys = _.difference(
+    Object.keys(dataFile2),
+    Object.keys(dataFile1),
+  );
+  const diffResult = {};
+  commonKeys.forEach((key) => {
+    if (dataFile1[key] === dataFile2[key]) {
+      diffResult[key] = { status: 'unchanged', value: dataFile1[key] };
+    } else {
+      diffResult[key] = {
+        status: 'changed',
+        valueBefore: dataFile1[key],
+        valueAfter: dataFile2[key],
+      };
+    }
+  });
+  addedKeys.forEach((key) => {
+    diffResult[key] = { status: 'added', value: dataFile2[key] };
+  });
+  removedKeys.forEach((key) => {
+    diffResult[key] = { status: 'removed', value: dataFile1[key] };
+  });
+  const diffSorted = Object.keys(diffResult)
+    .sort()
+    .reduce((acc, key) => {
+      const result = { ...acc };
+      result[key] = diffResult[key];
+      return result;
+    }, {});
+  return diffSorted;
+};
+
+export const loadFile = (path) => {
+  const dataFile = readFileSync(path, { encoding: 'utf8', flag: 'r' });
+  const result = JSON.parse(dataFile);
+  return result;
+};
+
+export default (path1, path2) => format(genDiff(loadFile(path1), loadFile(path2)));

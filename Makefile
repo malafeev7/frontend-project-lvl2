@@ -1,9 +1,22 @@
-install:
-	npm install
-gendiff:
-	node bin/gendiff.js
+install: install-deps
+
+run:
+	bin/gendiff.js
+
+install-deps:
+	npm ci
+
+test:
+	npm test
+
+watch:
+	npm test -- --watch
+
+test-coverage:
+	npm test -- --coverage --coverageProvider=v8
+
 lint:
 	npx eslint .
 
-lint-fix:
-	npx eslint --fix .
+publish:
+	npm publish --dry-run

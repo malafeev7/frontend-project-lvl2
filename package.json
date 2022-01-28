@@ -10,7 +10,7 @@
     "pre-push": "make lint"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest --bail"
   },
   "repository": {
     "type": "git",
@@ -22,20 +22,27 @@
     "url": "https://github.com/malafeev7/frontend-project-lvl2/issues"
   },
   "type": "module",
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "transform": {}
+  },
   "homepage": "https://github.com/malafeev7/frontend-project-lvl2#readme",
   "dependencies": {
+    "@jest/globals": "^27.4.6",
     "commander": "^8.3.0",
     "lodash": "^4.17.21",
     "webpack": "^5.66.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.8",
-    "@babel/core": "^7.16.10",
+    "@babel/core": "^7.16.12",
     "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
     "eslint": "^8.7.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jest": "^26.0.0",
     "jest": "^27.4.7"
   }
 }
