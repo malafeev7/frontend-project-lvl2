@@ -11,12 +11,12 @@ const getFixturePath = (filename) =>
   path.join(__dirname, "..", "__fixtures__", filename);
 const pathFile1 = getFixturePath("file1.json");
 const pathFile2 = getFixturePath("file2.json");
-const pathFileOutput = getFixturePath("changes.txt");
+const pathFileOutput = getFixturePath("changes");
 const dataFileOutput = readFileSync(pathFileOutput, {
   encoding: "utf8",
   flag: "r",
 });
 
 test("gendif flat file", () => {
-  expect(genDiff(pathFile1, pathFile2)).toBe(dataFileOutput);
+  expect(genDiff(pathFile1, pathFile2)).toEqual(dataFileOutput);
 });
